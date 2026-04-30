@@ -9,11 +9,11 @@ import java.util.Calendar;
  */
 public class JugadorDTO {
     
-    private String nombreyapellidos;
-    private Date fechanacimiento;
-    private Date fechainscripcion;
+    private String nombreYApellidos;
+    private Date fechaNacimiento;
+    private Date fechaInscripcion;
     private String correo;
-    private String contraseña;
+    private String contrasena;
     private boolean admin;
 
     /**
@@ -26,39 +26,52 @@ public class JugadorDTO {
     /**
      * Crea un nuevo jugador con la información proporcionada.
      * 
-     * @param nombreyapellidos El nombre y apellidos del jugador.
+     * @param nombreYApellidos El nombre y apellidos del jugador.
+     
      * @param fechanacimiento La fecha de nacimiento del jugador.
      * @param correo El correo electrónico del jugador.
      */
-    public JugadorDTO(String nombreyapellidos, Date fechanacimiento, String correo){
+    public JugadorDTO(String nombreYApellidos, Date fechanacimiento, String correo){
 
-        this.nombreyapellidos = nombreyapellidos;
-        this.fechanacimiento = fechanacimiento;
-        this.fechainscripcion = new Date();
+
+        this.nombreYApellidos = nombreYApellidos;
+
+
+        this.fechaNacimiento = fechanacimiento;
+        this.fechaInscripcion = new Date();
         this.correo = correo;
     }
-    public JugadorDTO(String nombreyapellidos, Date fechanacimiento, Date fechainscripcion, String correo){
+    public JugadorDTO(String nombreYApellidos, Date fechanacimiento, Date fechainscripcion, String correo){
 
-        this.nombreyapellidos = nombreyapellidos;
-        this.fechanacimiento = fechanacimiento;
-        this.fechainscripcion = fechainscripcion;
+
+        this.nombreYApellidos = nombreYApellidos;
+
+
+        this.fechaNacimiento = fechanacimiento;
+        this.fechaInscripcion = fechainscripcion;
         this.correo = correo;
     }
 
-    public JugadorDTO(String nombreyapellidos, Date fechanacimiento, Date fechainscripcion, String correo, String contraseña, boolean admin){
+    public JugadorDTO(String nombreYApellidos, Date fechanacimiento, Date fechainscripcion, String correo, String contraseña, boolean admin){
 
-        this.nombreyapellidos = nombreyapellidos;
-        this.fechanacimiento = fechanacimiento;
-        this.fechainscripcion = fechainscripcion;
+
+        this.nombreYApellidos = nombreYApellidos;
+
+
+        this.fechaNacimiento = fechanacimiento;
+        this.fechaInscripcion = fechainscripcion;
         this.correo = correo;
         this.admin = admin;
-        this.contraseña = contraseña;
+        this.contrasena = contraseña;
     }
 
-    public JugadorDTO(String correo, String nombreyapellidos, Date fechainscripcion){
+    public JugadorDTO(String correo, String nombreYApellidos, Date fechainscripcion){
 
-        this.nombreyapellidos = nombreyapellidos;
-        this.fechainscripcion = fechainscripcion;
+
+        this.nombreYApellidos = nombreYApellidos;
+
+
+        this.fechaInscripcion = fechainscripcion;
         this.correo = correo;
     }
 
@@ -69,17 +82,22 @@ public class JugadorDTO {
      */
     public String getNombreyapellidos(){
 
-        return nombreyapellidos;
+        return nombreYApellidos;
+
     }
 
     /**
      * Establece el nombre y apellidos del jugador.
      *
-     * @param nombreyapellidos El nuevo nombre y apellidos del jugador.
+     * @param nombreYApellidos El nuevo nombre y apellidos del jugador.
+     
      */
-    public void setNombreyapellidos(String nombreyapellidos){
+    public void setNombreyapellidos(String nombreYApellidos){
 
-        this.nombreyapellidos = nombreyapellidos;
+
+        this.nombreYApellidos = nombreYApellidos;
+
+
     }
 
     /**
@@ -87,9 +105,9 @@ public class JugadorDTO {
      *
      * @return La fecha de nacimiento del jugador.
      */
-    public Date getFechanacimiento(){
+    public Date getFechaNacimiento(){
 
-        return fechanacimiento;
+        return fechaNacimiento;
     }
 
     /**
@@ -97,9 +115,9 @@ public class JugadorDTO {
      *
      * @param fechanacimiento La nueva fecha de nacimiento del jugador.
      */
-    public void setFechanacimiento(Date fechanacimiento){
+    public void setFechaNacimiento(Date fechanacimiento){
 
-        this.fechanacimiento = fechanacimiento;
+        this.fechaNacimiento = fechanacimiento;
     }
 
     /**
@@ -107,9 +125,9 @@ public class JugadorDTO {
      *
      * @return La fecha de inscripción del jugador.
      */
-    public Date getFechainscripcion(){
+    public Date getFechaInscripcion(){
 
-        return fechainscripcion;
+        return fechaInscripcion;
     }
     
     /**
@@ -117,9 +135,9 @@ public class JugadorDTO {
      *
      * @param fechainscripcion La nueva fecha de inscripción del jugador.
      */
-    public void setFechainscripcion(Date fechainscripcion){
+    public void setFechaInscripcion(Date fechainscripcion){
 
-        this.fechainscripcion = fechainscripcion;
+        this.fechaInscripcion = fechainscripcion;
     }
 
     /**
@@ -149,8 +167,9 @@ public class JugadorDTO {
      */
     public String toString(){
 
-        return "Jugador: nombre y apellidos = "+nombreyapellidos+", fecha de nacimiento = "+fechanacimiento+
-        ", fecha de inscripcion = "+fechainscripcion+", correo = "+correo+".";
+        return "Jugador: nombre y apellidos = "+nombreYApellidos+", fecha de nacimiento = "+fechaNacimiento+
+
+        ", fecha de inscripcion = "+fechaInscripcion+", correo = "+correo+".";
     }
 
     /**
@@ -163,7 +182,7 @@ public class JugadorDTO {
         Date fechaactual = new Date();
 
         Calendar calendarinscripcion = Calendar.getInstance();
-        calendarinscripcion.setTime(fechainscripcion);
+        calendarinscripcion.setTime(fechaInscripcion);
 
         Calendar calendarActual = Calendar.getInstance();
         calendarActual.setTime(fechaactual);
@@ -180,16 +199,16 @@ public class JugadorDTO {
         return antiguedad;
     }
 
-    public void setContraseña(String contraseña){
-        this.contraseña=contraseña;
+    public void setContrasena(String contraseña){
+        this.contrasena=contraseña;
     }
 
     public void setAdmin(boolean admin){
         this.admin=admin;
     }
 
-    public String getContraseña(){
-        return contraseña;
+    public String getContrasena(){
+        return contrasena;
     }
 
     public boolean getAdmin(){
