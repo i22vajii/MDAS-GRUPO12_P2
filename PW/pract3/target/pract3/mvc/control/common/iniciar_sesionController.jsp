@@ -13,7 +13,7 @@
 %>
         <jsp:setProperty property="correo" value="<%=usuario.getCorreo()%>" name="customerBean"/>
         <jsp:setProperty property="contraseña" value="<%=usuario.getContrasena()%>" name="customerBean"/>
-        <jsp:setProperty property="nombre" value="<%=usuario.getNombreyapellidos()%>" name="customerBean"/>
+        <jsp:setProperty property="nombre" value="<%=usuario.getNombreYApellidos()%>" name="customerBean"/>
         <jsp:setProperty property="fecha_nacimiento" value="<%=usuario.getFechaNacimiento()%>" name="customerBean"/>
         <jsp:setProperty property="fecha_inscripcion" value="<%=usuario.getFechaInscripcion()%>" name="customerBean"/>
         <jsp:setProperty property="admin" value="<%=usuario.getAdmin()%>" name="customerBean"/>
