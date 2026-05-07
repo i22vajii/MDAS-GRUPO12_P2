@@ -16,9 +16,9 @@ public class PistaDTO {
     //tipo=true -> pista de exterior
     //tipo=false -> pista de interior
     private boolean tipo;
-    private TipoPista tamaño;
-    private int maxjugadores;
-    private ArrayList<MaterialDTO> listamateriales;
+    private TipoPista tamano;
+    private int maxJugadores;
+    private ArrayList<MaterialDTO> listaMateriales;
     
     /**
      * Crea un nuevo objeto {@code PistaDTO} sin inicializar sus atributos.
@@ -41,9 +41,9 @@ public class PistaDTO {
     	this.nombre=nombre;
     	this.estado=estado;
     	this.tipo=tipo;
-    	this.tamaño=tamaño;
-    	this.maxjugadores=maxjugadores;
-    	this.listamateriales = new ArrayList<MaterialDTO>();
+    	this.tamano=tamaño;
+    	this.maxJugadores=maxjugadores;
+    	this.listaMateriales = new ArrayList<MaterialDTO>();
     }
 
     public PistaDTO(String nombre, boolean estado, boolean tipo, TipoPista tamaño, int maxjugadores, ArrayList<MaterialDTO> materiales) {
@@ -51,9 +51,9 @@ public class PistaDTO {
     	this.nombre=nombre;
     	this.estado=estado;
     	this.tipo=tipo;
-    	this.tamaño=tamaño;
-    	this.maxjugadores=maxjugadores;
-    	this.listamateriales = materiales;
+    	this.tamano=tamaño;
+    	this.maxJugadores=maxjugadores;
+    	this.listaMateriales = materiales;
     }
     
     /**
@@ -115,8 +115,8 @@ public class PistaDTO {
      *
      * @return El tamaño de la pista.
      */
-    public TipoPista getTamaño() {
-    	return tamaño;
+    public TipoPista getTamano() {
+    	return tamano;
     }
     
     /**
@@ -124,8 +124,8 @@ public class PistaDTO {
      *
      * @param tamaño El nuevo tamaño de la pista.
      */
-    public void setTamaño(TipoPista tamaño) {
-    	this.tamaño=tamaño;
+    public void setTamano(TipoPista tamaño) {
+    	this.tamano=tamaño;
     }
     
     /**
@@ -134,7 +134,7 @@ public class PistaDTO {
      * @return El número máximo de jugadores.
      */
     public int getMaxJugadores() {
-    	return maxjugadores;
+    	return maxJugadores;
     }
     
     /**
@@ -143,7 +143,7 @@ public class PistaDTO {
      * @param maxjugadores El nuevo número máximo de jugadores.
      */
     public void setMaxJugadores(int maxjugadores) {
-    	this.maxjugadores=maxjugadores;
+    	this.maxJugadores=maxjugadores;
     }
     
     /**
@@ -152,7 +152,7 @@ public class PistaDTO {
      * @return La lista de materiales.
      */
     public ArrayList<MaterialDTO> getListaMateriales(){
-    	return listamateriales;
+    	return listaMateriales;
     }
     
     /**
@@ -161,7 +161,7 @@ public class PistaDTO {
      * @param listamateriales La nueva lista de materiales.
      */
     public void setListaMateriales(ArrayList<MaterialDTO> listamateriales) {
-    	this.listamateriales=listamateriales;
+    	this.listaMateriales=listamateriales;
     }
     
     /**
@@ -170,7 +170,7 @@ public class PistaDTO {
      * @return Una cadena que representa la información de la pista.
      */
     public String toString() {
-    	return "Pista: nombre= "+nombre+", estado= "+estado+", tipo= "+tipo+", tamaño= "+tamaño+", maxjugadores= "+maxjugadores+", lista de materiales= "+listamateriales;
+    	return "Pista: nombre= "+nombre+", estado= "+estado+", tipo= "+tipo+", tamaño= "+tamano+", maxjugadores= "+maxJugadores+", lista de materiales= "+listaMateriales;
     }
     
     /**
@@ -180,7 +180,7 @@ public class PistaDTO {
      */
     public ArrayList<MaterialDTO> consultarMaterialesDisponibles(){
     	ArrayList<MaterialDTO> disponibles = new ArrayList<MaterialDTO>();
-    	for(MaterialDTO material: listamateriales) {
+    	for(MaterialDTO material: listaMateriales) {
     		if(material.getEstado() == Estado.DISPONIBLE) {
     			disponibles.add(material);
     		}
@@ -197,7 +197,7 @@ public class PistaDTO {
     public void asociarMaterialAPista(MaterialDTO material) {
     	int numpelotas=0, numcanastas=0, numconos=0;
     	if(material.getUso() != false && tipo != true) {
-    		for(MaterialDTO mat: listamateriales) {
+    		for(MaterialDTO mat: listaMateriales) {
     			if(mat.getTipo() == Tipo.CANASTAS) {
     				numcanastas++;
     			}
@@ -209,13 +209,13 @@ public class PistaDTO {
     			}
     		}
     		if(material.getTipo() == Tipo.CANASTAS && numcanastas < 2) {
-    			listamateriales.add(material);
+    			listaMateriales.add(material);
     		}
     		if(material.getTipo() == Tipo.PELOTAS && numpelotas < 12) {
-    			listamateriales.add(material);
+    			listaMateriales.add(material);
     		}
     		if(material.getTipo() == Tipo.CONOS && numconos < 20) {
-    			listamateriales.add(material);
+    			listaMateriales.add(material);
     		}
     	}
 

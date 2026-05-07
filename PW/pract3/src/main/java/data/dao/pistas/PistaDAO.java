@@ -185,7 +185,7 @@ public class PistaDAO {
             	pista.setNombre(nombre_pista);
             	pista.setEstado(rs.getBoolean("Estado"));
                 pista.setTipo(rs.getBoolean("Tipo"));
-                pista.setTamaño(TipoPista.valueOf(rs.getString("Tamaño")));
+                pista.setTamano(TipoPista.valueOf(rs.getString("Tamaño")));
                 pista.setMaxJugadores(rs.getInt("Jugadores_maximos"));  
             }
             // Cerrar recursos
@@ -353,7 +353,7 @@ public class PistaDAO {
             	pista.setNombre(rs.getString("Nombre"));
             	pista.setEstado(rs.getBoolean("Estado"));
                 pista.setTipo(rs.getBoolean("Tipo"));
-                pista.setTamaño(TipoPista.valueOf(rs.getString("Tamaño")));
+                pista.setTamano(TipoPista.valueOf(rs.getString("Tamaño")));
                 pista.setMaxJugadores(rs.getInt("Jugadores_maximos"));  
                 pistas.add(pista);
             }
@@ -512,7 +512,7 @@ public ArrayList<PistaDTO> requestTipoPista(boolean tipo) {
             	pista.setNombre(rs.getString("Nombre"));
             	pista.setEstado(rs.getBoolean("Estado"));
                 pista.setTipo(rs.getBoolean("Tipo"));
-                pista.setTamaño(TipoPista.valueOf(rs.getString("Tamaño")));
+                pista.setTamano(TipoPista.valueOf(rs.getString("Tamaño")));
                 pista.setMaxJugadores(rs.getInt("Jugadores_maximos"));  
                 pistas.add(pista);
             }
@@ -558,7 +558,7 @@ public ArrayList<PistaDTO> requestTipoPista(boolean tipo) {
                 pista.setNombre(rs.getString("Nombre"));
                 pista.setEstado(rs.getBoolean("Estado"));
                 pista.setTipo(rs.getBoolean("Tipo"));
-                pista.setTamaño(TipoPista.valueOf(rs.getString("Tamaño")));
+                pista.setTamano(TipoPista.valueOf(rs.getString("Tamaño")));
                 pista.setMaxJugadores(rs.getInt("Jugadores_maximos"));  
                 pistas.add(pista);
             }

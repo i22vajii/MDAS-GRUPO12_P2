@@ -49,7 +49,7 @@
                     <tr>
                         <td><%= pista.getNombre() %></td>
                         <td><%= pista.getTipo() ? "Exterior" : "Interior" %></td>
-                        <td><%= pista.getTamaño() %></td>
+                        <td><%= pista.getTamano() %></td>
                         <td><%= pista.getMaxJugadores() %></td>
                         
                     </tr>
