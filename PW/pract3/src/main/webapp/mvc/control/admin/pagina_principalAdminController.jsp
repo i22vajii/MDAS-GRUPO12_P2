@@ -14,8 +14,8 @@
 
     for(JugadorDTO usuario : usuarios){
         correos.add(usuario.getCorreo());
-        nombres.add(usuario.getNombreyapellidos());
-        java.util.Date fecha = usuario.getFechainscripcion();
+        nombres.add(usuario.getNombreYApellidos());
+        java.util.Date fecha = usuario.getFechaInscripcion();
         if(fecha == null){
             fechas_inscripcion.add(null);
         }
