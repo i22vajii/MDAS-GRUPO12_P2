@@ -24,13 +24,18 @@ public class RealizarReservaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-        if(cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true){
+        if (cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
         } 
-        if(request.getParameter("tipoReserva") == null || request.getParameter("numNinos") == null || request.getParameter("numAdultos") == null || request.getParameter("duracion") == null || request.getParameter("fechaHora") == null){
+        
+        if (request.getParameter("tipoReserva") == null || 
+            request.getParameter("numNinos") == null || 
+            request.getParameter("numAdultos") == null || 
+            request.getParameter("duracion") == null || 
+            request.getParameter("fechaHora") == null) {
+            
             response.sendRedirect("/pract3/mvc/control/user/pagina_principalUserController.jsp");
             return;
         }        
@@ -41,17 +46,18 @@ public class RealizarReservaServlet extends HttpServlet {
         String tipoReserva = request.getParameter("tipoReserva");
         int n_niños = 0;
         int n_adultos = 0;
-        switch(tipoReserva){
+        
+        switch (tipoReserva) {
             case "infantil":
                 n_niños = Integer.parseInt(request.getParameter("numNinos"));
-            break;
+                break;
             case "familiar":
                 n_niños = Integer.parseInt(request.getParameter("numNinos"));
                 n_adultos = Integer.parseInt(request.getParameter("numAdultos"));
-            break;
+                break;
             case "adultos":
                 n_adultos = Integer.parseInt(request.getParameter("numAdultos"));
-            break;
+                break;
         }
 
         int duracion = Integer.parseInt(request.getParameter("duracion"));
@@ -59,19 +65,17 @@ public class RealizarReservaServlet extends HttpServlet {
 
         java.util.Date fecha = null;
 
-        try{
+        try {
             fecha = sdf.parse(fecha_hora);
-        } catch (Exception e){}
+        } catch (Exception e) {}
 
-        //Seleccionar una pista disponible que este disponible para el rango horario seleccionado, para los usuarios seleccionados
         PistaDAO pistaDAO = new PistaDAO();
         ArrayList<String> pistas = new ArrayList<>();
-        //Traerme las pistas disponibles
-        pistas = pistaDAO.requestPistasDisponiblesTamañoJugadores(tipoReserva, n_niños+n_adultos);
-        //Comprobar que estan disponibles en el rango horario
+        
+        pistas = pistaDAO.requestPistasDisponiblesTamañoJugadores(tipoReserva, n_niños + n_adultos);
         pistas = reservaDAO.checkDisponibilidadPistas(pistas, fecha, duracion);
 
-        if(pistas.isEmpty()){
+        if (pistas.isEmpty()) {
             response.sendRedirect("/pract3/mvc/view/user/error_no_hay_pistas_disponibles.jsp");
             return;
         }
@@ -89,19 +93,17 @@ public class RealizarReservaServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        //Hacer la reserva 
         HttpSession session = request.getSession();
-
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-        if(cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true){
+        if (cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
         } 
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         ReservaDAO reservaDAO = new ReservaDAO();
 
-        String seleccion = request.getParameter("seleccion"); // Pista seleccionada
+        String seleccion = request.getParameter("seleccion");
         int nNiños = Integer.parseInt(request.getParameter("numNinos"));
         int nAdultos = Integer.parseInt(request.getParameter("numAdultos"));
         int duracion = Integer.parseInt(request.getParameter("duracion"));
@@ -110,44 +112,51 @@ public class RealizarReservaServlet extends HttpServlet {
         float descuento = 0;
 
         java.util.Date fecha = null;
-        try{
+        try {
             fecha = sdf.parse(fechaHora);
-        } catch (Exception e){}
+        } catch (Exception e) {}
 
-        switch(duracion){
+        /**
+         * Cálculo de precios basado en la duración de la reserva
+         */
+        switch (duracion) {
             case 60:
                 precio = 20;
-            break;
+                break;
             case 90:
                 precio = 30;
-            break;
+                break;
             case 120:
                 precio = 40;
-            break;
+                break;
         }
 
-        //Si es la primera reserva del usuario actualizamos su fecha de inscripcion
-        if(cB.getFecha_inscripcion() == null){
+        /**
+         * Gestión de primera reserva y políticas de descuento.
+         * Si el usuario es nuevo, se inicializa su fecha de inscripción.
+         * En caso contrario, se verifica si cuenta con antigüedad suficiente (2 años)
+         * para aplicarle un descuento del 10%.
+         */
+        if (cB.getFecha_inscripcion() == null) {
             JugadorDAO jugadorDAO = new JugadorDAO();
-            if(!jugadorDAO.updateFechaInscripcion(cB.getCorreo(), new java.sql.Date(fecha.getTime()))){
+            if (!jugadorDAO.updateFechaInscripcion(cB.getCorreo(), new java.sql.Date(fecha.getTime()))) {
                 response.sendRedirect("/pract3/mvc/view/error/error_general.jsp");
                 return;
             }
-        }
-        else{
+        } else {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, -2); // Retrocede 2 años desde hoy
+            calendar.add(Calendar.YEAR, -2); 
             java.util.Date fecha_ant = calendar.getTime();
-            if(cB.getFecha_inscripcion().before(fecha_ant)){
+            
+            if (cB.getFecha_inscripcion().before(fecha_ant)) {
                 descuento = 0.1f;
             }
         }
 
-        if(reservaDAO.createReservaIndividual(cB.getCorreo(), seleccion, new java.sql.Date(fecha.getTime()), new java.sql.Time(fecha.getTime()), duracion, nNiños, nAdultos, descuento, precio)) {
+        if (reservaDAO.createReservaIndividual(cB.getCorreo(), seleccion, new java.sql.Date(fecha.getTime()), new java.sql.Time(fecha.getTime()), duracion, nNiños, nAdultos, descuento, precio)) {
             response.sendRedirect("/pract3/mvc/view/user/realizar_reserva_correctoView.jsp");
             return;
-        }
-        else{
+        } else {
             response.sendRedirect("/pract3/mvc/view/error/error_general.jsp");
             return;
         }
