@@ -45,7 +45,7 @@
                         <td><%= pista.getNombre() %></td>
                         <td><%= pista.getEstado() ? "Disponible" : "No Disponible" %></td>
                         <td><%= pista.getTipo() ? "Exterior" : "Interior" %></td>
-                        <td><%= pista.getTamaño() %></td>
+                        <td><%= pista.getTamano() %></td>
                         <td><%= pista.getMaxJugadores() %></td>
                         <td>
                             <select name="estado_<%= pista.getNombre() %>">
