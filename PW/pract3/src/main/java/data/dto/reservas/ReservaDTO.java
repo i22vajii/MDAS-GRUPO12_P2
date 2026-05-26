@@ -32,7 +32,6 @@ public abstract class ReservaDTO {
      * @return El identificador del usuario.
      */
     public String getId_user(){
-
         return id_user;
     }
     
@@ -42,7 +41,6 @@ public abstract class ReservaDTO {
      * @return La fecha y hora de la reserva.
      */
     public Date getFecha_hora(){
-
         return fecha_hora;
     }
     
@@ -52,7 +50,6 @@ public abstract class ReservaDTO {
      * @return La duración de la reserva.
      */
     public int getDuracion(){
-
         return duracion;
     }
     
@@ -62,7 +59,6 @@ public abstract class ReservaDTO {
      * @return El nombre de la pista.
      */
     public String getNombrePista(){
-
         return nombre_pista;
     }
     
@@ -72,7 +68,6 @@ public abstract class ReservaDTO {
      * @return El precio de la reserva.
      */
     public float getPrecio(){
-
         return precio;
     }
     
@@ -82,7 +77,6 @@ public abstract class ReservaDTO {
      * @return El descuento de la reserva.
      */
     public float getDescuento(){
-
         return descuento;
     }
 
@@ -92,7 +86,6 @@ public abstract class ReservaDTO {
      * @param id_user El nuevo identificador del usuario.
      */
     public void setId_user(String id_user){
-
         this.id_user=id_user;
     }
     
@@ -102,7 +95,6 @@ public abstract class ReservaDTO {
      * @param fecha_hora La nueva fecha y hora de la reserva.
      */
     public void setFecha_hora(Date fecha_hora){
-        
         this.fecha_hora=fecha_hora;
     }
     
@@ -112,7 +104,6 @@ public abstract class ReservaDTO {
      * @param duracion La nueva duración de la reserva en minutos.
      */
     public void setDuracion(int duracion){
-
         this.duracion=duracion;
     }
     
@@ -122,7 +113,6 @@ public abstract class ReservaDTO {
      * @param nombre_pista El nuevo nombre de la pista.
      */
     public void setNombrePista(String nombre_pista){
-        
         this.nombre_pista=nombre_pista;
     }
     
@@ -132,7 +122,6 @@ public abstract class ReservaDTO {
      * @param precio El nuevo precio de la reserva.
      */
     public void setPrecio(float precio){
-
         this.precio=precio;
     }
     
@@ -143,7 +132,6 @@ public abstract class ReservaDTO {
      */
 
     public void setDescuento(float descuento){
-
         this.descuento=descuento;
     }
 

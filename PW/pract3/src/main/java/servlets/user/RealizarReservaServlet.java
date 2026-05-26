@@ -26,9 +26,12 @@ public class RealizarReservaServlet extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-        if (cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true) {
+       if (cB == null 
+            || cB.getCorreo() == null 
+            || cB.getCorreo() == "" 
+            || cB.getAdmin() == true) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
-        } 
+        }
         
         if (request.getParameter("tipoReserva") == null || 
             request.getParameter("numNinos") == null || 
@@ -96,9 +99,12 @@ public class RealizarReservaServlet extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-        if (cB == null || cB.getCorreo() == null || cB.getCorreo() == "" || cB.getAdmin() == true) {
+        if (cB == null 
+            || cB.getCorreo() == null 
+            || cB.getCorreo() == "" 
+            || cB.getAdmin() == true) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
-        } 
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         ReservaDAO reservaDAO = new ReservaDAO();
@@ -153,7 +159,19 @@ public class RealizarReservaServlet extends HttpServlet {
             }
         }
 
-        if (reservaDAO.createReservaIndividual(cB.getCorreo(), seleccion, new java.sql.Date(fecha.getTime()), new java.sql.Time(fecha.getTime()), duracion, nNiños, nAdultos, descuento, precio)) {
+        boolean reservaCreada = reservaDAO.createReservaIndividual(
+            cB.getCorreo(), 
+            seleccion, 
+            new java.sql.Date(fecha.getTime()), 
+            new java.sql.Time(fecha.getTime()), 
+            duracion, 
+            nNiños, 
+            nAdultos, 
+            descuento, 
+            precio
+        );
+
+        if (reservaCreada) {
             response.sendRedirect("/pract3/mvc/view/user/realizar_reserva_correctoView.jsp");
             return;
         } else {
