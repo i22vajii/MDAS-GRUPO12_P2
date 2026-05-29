@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import data.dao.jugadores.JugadorDAO;
 import data.dao.pistas.PistaDAO;
 import data.dao.reservas.ReservaDAO;
+import data.dto.reservas.ReservaFamiliarDTO;
 import display.CustomerBean;
 
 @WebServlet("/user/RealizarReservaServlet")
@@ -114,28 +115,16 @@ public class RealizarReservaServlet extends HttpServlet {
         int nAdultos = Integer.parseInt(request.getParameter("numAdultos"));
         int duracion = Integer.parseInt(request.getParameter("duracion"));
         String fechaHora = request.getParameter("fechaHora");
-        int precio = 0;
+        
+        // <<< CAMBIO AQUÍ >>>
+        // Reemplazamos la declaración e inicialización separada por la llamada directa a la función
+        int precio = calcularPrecioPorDuracion(duracion);
         float descuento = 0;
 
         java.util.Date fecha = null;
         try {
             fecha = sdf.parse(fechaHora);
         } catch (Exception e) {}
-
-        /**
-         * Cálculo de precios basado en la duración de la reserva
-         */
-        switch (duracion) {
-            case 60:
-                precio = 20;
-                break;
-            case 90:
-                precio = 30;
-                break;
-            case 120:
-                precio = 40;
-                break;
-        }
 
         /**
          * Gestión de primera reserva y políticas de descuento.
@@ -150,26 +139,25 @@ public class RealizarReservaServlet extends HttpServlet {
                 return;
             }
         } else {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, -2); 
-            java.util.Date fecha_ant = calendar.getTime();
-            
-            if (cB.getFecha_inscripcion().before(fecha_ant)) {
+            // Llamamos a la función descriptiva en lugar de hacer los cálculos aquí
+            if (tieneAntiguedadSuficiente(cB.getFecha_inscripcion())) {
                 descuento = 0.1f;
             }
         }
 
-        boolean reservaCreada = reservaDAO.createReservaIndividual(
+   
+        ReservaFamiliarDTO nuevaReserva = new ReservaFamiliarDTO(
             cB.getCorreo(), 
-            seleccion, 
-            new java.sql.Date(fecha.getTime()), 
-            new java.sql.Time(fecha.getTime()), 
+            fecha, // Objeto java.util.Date completo
             duracion, 
-            nNiños, 
-            nAdultos, 
+            seleccion, 
             descuento, 
-            precio
+            nNiños, 
+            nAdultos
         );
+
+        
+        boolean reservaCreada = reservaDAO.createReservaIndividual(nuevaReserva, precio);
 
         if (reservaCreada) {
             response.sendRedirect("/pract3/mvc/view/user/realizar_reserva_correctoView.jsp");
@@ -178,5 +166,36 @@ public class RealizarReservaServlet extends HttpServlet {
             response.sendRedirect("/pract3/mvc/view/error/error_general.jsp");
             return;
         }
+    }
+    /**
+     * Calcula el precio de la reserva en base a su duración en minutos.
+     */
+    private int calcularPrecioPorDuracion(int duracion) {
+        switch (duracion) {
+            case 60:
+                return 20;
+            case 90:
+                return 30;
+            case 120:
+                return 40;
+            default:
+                return 0; // Valor por defecto o manejo de error si la duración no es válida
+        }
+    }
+    
+
+    /**
+     * Comprueba si la fecha de inscripción del usuario tiene una antigüedad de 2 años o más.
+     */
+    private boolean tieneAntiguedadSuficiente(java.util.Date fechaInscripcion) {
+        if (fechaInscripcion == null) {
+            return false;
+        }
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -2); 
+        java.util.Date fechaAntiguedad = calendar.getTime();
+        
+        return fechaInscripcion.before(fechaAntiguedad);
     }
 }

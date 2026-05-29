@@ -204,34 +204,36 @@ public class ReservaDAO {
 	 * @param precio El precio total de la reserva.
 	 * @return `true` si la reserva se crea correctamente, `false` si ocurre un error.
 	 */
-	public boolean createReservaIndividual(String correo, String nombre_pista, java.sql.Date fecha ,Time hora, int duracion,int nniños,int nadultos,float descuento,float precio){
+	// Pasamos de 9 parámetros a 1 solo objeto (usando una clase que ya tienes)
+	public boolean createReservaIndividual(ReservaFamiliarDTO reserva, float precio) {
+    
 
-		try {
-            DBConnection dbConnection = new DBConnection();
-            Connection connection = dbConnection.getConnection();
-			
-			String query = sqlProperties.getSQLQuery("sql.insert.createReservaIndividual");
-            PreparedStatement pstmt = connection.prepareStatement(query);
-		
-			pstmt.setString(1, correo);
-            pstmt.setString(2, nombre_pista);
-			pstmt.setDate(3, fecha);
-			pstmt.setTime(4, hora);
-			pstmt.setInt(5, duracion);
-			pstmt.setInt(6, nadultos);
-			pstmt.setInt(7, nniños);
-			pstmt.setFloat(8, descuento);
-			pstmt.setFloat(9, precio);
-		
-            pstmt.executeUpdate();
-            dbConnection.closeConnection();
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error al crear la reserva individual: " + e.getMessage());
-            return false;
-        }
-		
-	}
+    try {
+        DBConnection dbConnection = new DBConnection();
+        Connection connection = dbConnection.getConnection();
+        
+        String query = sqlProperties.getSQLQuery("sql.insert.createReservaIndividual");
+        PreparedStatement pstmt = connection.prepareStatement(query);
+    
+        // Sacamos los datos directamente del objeto
+        pstmt.setString(1, reserva.getId_user());
+        pstmt.setString(2, reserva.getNombrePista());
+        pstmt.setDate(3, new java.sql.Date(reserva.getFecha_hora().getTime()));
+        pstmt.setTime(4, new java.sql.Time(reserva.getFecha_hora().getTime()));
+        pstmt.setInt(5, reserva.getDuracion());
+        pstmt.setInt(6, reserva.getAdultos()); 
+        pstmt.setInt(7, reserva.getNinos());   
+        pstmt.setFloat(8, reserva.getDescuento());
+        pstmt.setFloat(9, precio); 
+    
+        pstmt.executeUpdate();
+        dbConnection.closeConnection();
+        return true;
+    } catch (SQLException e) {
+        System.err.println("Error al crear la reserva individual: " + e.getMessage());
+        return false;
+    }
+}
 
 	/**
 	 * Crea una reserva para un bono, añadiéndola tanto en la tabla `reserva_bonos` como en la tabla `reservas`.
@@ -251,58 +253,58 @@ public class ReservaDAO {
 	 */
 	public boolean createAñadirReservaABono(int id_bono, String correoUsuario, String nombre_pista, java.sql.Date fecha ,Time hora, int duracion,int nniños,int nadultos,float descuento,float precio){
 
-		try {
-            DBConnection dbConnection = new DBConnection();
-            Connection connection = dbConnection.getConnection();
+			try {
+            	DBConnection dbConnection = new DBConnection();
+            	Connection connection = dbConnection.getConnection();
 			
-            //Insertamos la reserva en la tabla reserva_bonos
-			String query = sqlProperties.getSQLQuery("sql.insert.createAñadirReservaABono1");
-            PreparedStatement pstmt = connection.prepareStatement(query);
+        	    //Insertamos la reserva en la tabla reserva_bonos
+				String query = sqlProperties.getSQLQuery("sql.insert.createAñadirReservaABono1");
+        		PreparedStatement pstmt = connection.prepareStatement(query);
             
-			pstmt.setInt(1, id_bono);
-            pstmt.setString(2, nombre_pista);
-			pstmt.setDate(3, fecha);
-			pstmt.setTime(4, hora);
+				pstmt.setInt(1, id_bono);
+				pstmt.setString(2, nombre_pista);
+				pstmt.setDate(3, fecha);
+				pstmt.setTime(4, hora);
 
-            pstmt.executeUpdate();
-            
-            //Insertamos la reserva en la tabla reservas
-            query = sqlProperties.getSQLQuery("sql.insert.createAñadirReservaABono2");
-            pstmt = connection.prepareStatement(query);
-		
-			pstmt.setString(1, correoUsuario);
-            pstmt.setString(2, nombre_pista);
-			pstmt.setDate(3, fecha);
-			pstmt.setTime(4, hora);
-			pstmt.setInt(5, duracion);
-			pstmt.setInt(6, nadultos);
-			pstmt.setInt(7, nniños);
-			pstmt.setFloat(8, descuento);
-			pstmt.setFloat(9, precio);
-		
-            pstmt.executeUpdate();
-            
-            //Quitamos una sesion disponible en el bonp
-            query = sqlProperties.getSQLQuery("sql.update.createAñadirReservaABono");
-            pstmt = connection.prepareStatement(query);
-            
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(fecha);
-			calendar.add(Calendar.YEAR, 1);  // Sumar un año
+				pstmt.executeUpdate();
+				
+				//Insertamos la reserva en la tabla reservas
+				query = sqlProperties.getSQLQuery("sql.insert.createAñadirReservaABono2");
+				pstmt = connection.prepareStatement(query);
+			
+				pstmt.setString(1, correoUsuario);
+				pstmt.setString(2, nombre_pista);
+				pstmt.setDate(3, fecha);
+				pstmt.setTime(4, hora);
+				pstmt.setInt(5, duracion);
+				pstmt.setInt(6, nadultos);
+				pstmt.setInt(7, nniños);
+				pstmt.setFloat(8, descuento);
+				pstmt.setFloat(9, precio);
+			
+				pstmt.executeUpdate();
+				
+				//Quitamos una sesion disponible en el bonp
+				query = sqlProperties.getSQLQuery("sql.update.createAñadirReservaABono");
+				pstmt = connection.prepareStatement(query);
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(fecha);
+				calendar.add(Calendar.YEAR, 1);  // Sumar un año
 
-			// Obtener el nuevo java.sql.Date
-			java.sql.Date fecha_cad = new java.sql.Date(calendar.getTimeInMillis());
+				// Obtener el nuevo java.sql.Date
+				java.sql.Date fecha_cad = new java.sql.Date(calendar.getTimeInMillis());
 
-			pstmt.setDate(1, fecha_cad);
-			pstmt.setInt(2, id_bono);
-            pstmt.executeUpdate();
-            
-            dbConnection.closeConnection();
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error al crear la reserva en bono: " + e.getMessage());
-            return false;
-        }
+				pstmt.setDate(1, fecha_cad);
+				pstmt.setInt(2, id_bono);
+				pstmt.executeUpdate();
+				
+				dbConnection.closeConnection();
+				return true;
+			} catch (SQLException e) {
+				System.err.println("Error al crear la reserva en bono: " + e.getMessage());
+				return false;
+			}
 		
 	}
 	
