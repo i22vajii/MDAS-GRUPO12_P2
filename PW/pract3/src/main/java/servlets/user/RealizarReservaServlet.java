@@ -20,6 +20,10 @@ import display.CustomerBean;
 @WebServlet("/user/RealizarReservaServlet")
 public class RealizarReservaServlet extends HttpServlet {
 
+    private static final String RESERVA_INFANTIL = "infantil";
+    private static final String RESERVA_FAMILIAR = "familiar";
+    private static final String RESERVA_ADULTOS = "adultos";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -27,11 +31,9 @@ public class RealizarReservaServlet extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-       if (cB == null 
-            || cB.getCorreo() == null 
-            || cB.getCorreo() == "" 
-            || cB.getAdmin() == true) {
+        if (requiereInicioSesion(cB)) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
+            return; 
         }
         
         if (request.getParameter("tipoReserva") == null || 
@@ -52,14 +54,14 @@ public class RealizarReservaServlet extends HttpServlet {
         int n_adultos = 0;
         
         switch (tipoReserva) {
-            case "infantil":
+            case RESERVA_INFANTIL:
                 n_niños = Integer.parseInt(request.getParameter("numNinos"));
                 break;
-            case "familiar":
+            case RESERVA_FAMILIAR:
                 n_niños = Integer.parseInt(request.getParameter("numNinos"));
                 n_adultos = Integer.parseInt(request.getParameter("numAdultos"));
                 break;
-            case "adultos":
+            case RESERVA_ADULTOS:
                 n_adultos = Integer.parseInt(request.getParameter("numAdultos"));
                 break;
         }
@@ -100,11 +102,9 @@ public class RealizarReservaServlet extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerBean cB = (CustomerBean) session.getAttribute("customerBean");
 
-        if (cB == null 
-            || cB.getCorreo() == null 
-            || cB.getCorreo() == "" 
-            || cB.getAdmin() == true) {
+        if (requiereInicioSesion(cB)) {
             request.getRequestDispatcher("/include/iniciosesionUser.jsp").forward(request, response);
+            return; 
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
@@ -197,5 +197,11 @@ public class RealizarReservaServlet extends HttpServlet {
         java.util.Date fechaAntiguedad = calendar.getTime();
         
         return fechaInscripcion.before(fechaAntiguedad);
+    }
+    private boolean requiereInicioSesion(CustomerBean cB) {
+        return cB == null 
+            || cB.getCorreo() == null 
+            || cB.getCorreo().trim().isEmpty() 
+            || cB.getAdmin() == true;
     }
 }

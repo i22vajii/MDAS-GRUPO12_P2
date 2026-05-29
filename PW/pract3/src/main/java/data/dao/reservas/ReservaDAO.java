@@ -22,6 +22,10 @@ public class ReservaDAO {
 
 	private SQLProperties sqlProperties;
 
+	private static final String TIPO_INFANTIL = "infantil";
+    private static final String TIPO_FAMILIAR = "familiar";
+    private static final String TIPO_ADULTOS = "adultos";
+
 	/**
 	 * Constructor de la clase ReservaDAO.
 	 * <p>
@@ -171,23 +175,25 @@ public class ReservaDAO {
 	 * @return `true` si el bono se crea correctamente en la base de datos, `false` si ocurre un error.
 	 */
 	public boolean createNewBono(String idUsuario, TipoPista tipo){
-
+		DBConnection dbConnection = null;
+		PreparedStatement pstmt = null;
 		try {
-            DBConnection dbConnection = new DBConnection();
-            Connection connection = dbConnection.getConnection();
+			dbConnection = new DBConnection();
+			Connection connection = dbConnection.getConnection();
 			String query = sqlProperties.getSQLQuery("sql.insert.createNewBono");
 			
-            PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, idUsuario);
-            pstmt.setString(2, tipo.name());
+			pstmt = connection.prepareStatement(query);
+			pstmt.setString(1, idUsuario);
+			pstmt.setString(2, tipo.name());
 
-            pstmt.executeUpdate();
-            dbConnection.closeConnection();
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error al crear el bono: " + e.getMessage());
-            return false;
-        }
+			pstmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			System.err.println("Error al crear el bono: " + e.getMessage());
+			return false;
+		} finally {
+			cerrarRecursosSeguro(pstmt, dbConnection);
+		}
 	}
 	
 	/**
@@ -506,13 +512,13 @@ public class ReservaDAO {
 			String query = null;
 
 			switch(tipoReserva){
-				case "infantil":
+				case TIPO_INFANTIL: 
 					query = sqlProperties.getSQLQuery("sql.select.checkBonoTipoReservaInfantil");
 				break;
-				case "familiar":
+				case TIPO_FAMILIAR: 
 					query = sqlProperties.getSQLQuery("sql.select.checkBonoTipoReservaFamiliar");
 				break;
-				case "adultos":
+				case TIPO_ADULTOS: 
 					query = sqlProperties.getSQLQuery("sql.select.checkBonoTipoReservaAdultos");
 				break;			
 			}
@@ -719,5 +725,19 @@ public class ReservaDAO {
 			e.printStackTrace();
 		}
 		return reservas;
+	}
+
+	private void cerrarRecursosSeguro(PreparedStatement pstmt, DBConnection dbConnection) {
+		try {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+		} catch (SQLException e) {
+			System.err.println("Error cerrando PreparedStatement: " + e.getMessage());
+		} finally {
+			if (dbConnection != null) {
+				dbConnection.closeConnection();
+			}
+		}
 	}
 }
