@@ -180,9 +180,7 @@ public class ReservaDAO {
 		try {
 			dbConnection = new DBConnection();
 			Connection connection = dbConnection.getConnection();
-			String query = sqlProperties.getSQLQuery("sql.insert.createNewBono");
-			
-			pstmt = connection.prepareStatement(query);
+			pstmt = connection.prepareStatement(sqlProperties.getSQLQuery("sql.insert.createNewBono"));
 			pstmt.setString(1, idUsuario);
 			pstmt.setString(2, tipo.name());
 
@@ -218,8 +216,7 @@ public class ReservaDAO {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
         
-        String query = sqlProperties.getSQLQuery("sql.insert.createReservaIndividual");
-        PreparedStatement pstmt = connection.prepareStatement(query);
+        PreparedStatement pstmt = connection.prepareStatement(sqlProperties.getSQLQuery("sql.insert.createReservaIndividual"));
     
         // Sacamos los datos directamente del objeto
         pstmt.setString(1, reserva.getId_user());
@@ -326,9 +323,7 @@ public class ReservaDAO {
 		try {
 			DBConnection dbConnection = new DBConnection();
 			Connection connection = dbConnection.getConnection();
-			String query = sqlProperties.getSQLQuery("sql.select.requestProximaReserva");			
-
-			PreparedStatement pstmt = connection.prepareStatement(query);
+			PreparedStatement pstmt = connection.prepareStatement(sqlProperties.getSQLQuery("sql.select.requestProximaReserva"));
 			pstmt.setString(1, correo);
 			pstmt.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
 			ResultSet rs = (ResultSet) pstmt.executeQuery();
@@ -361,8 +356,7 @@ public class ReservaDAO {
 		try {
 			DBConnection dbConnection = new DBConnection();
 			Connection connection = dbConnection.getConnection();
-			String query = sqlProperties.getSQLQuery("sql.select.requestNumeroReservas");			
-			PreparedStatement pstmt = connection.prepareStatement(query);		
+			PreparedStatement pstmt = connection.prepareStatement(sqlProperties.getSQLQuery("sql.select.requestNumeroReservas"));		
 
 			for(int i=0; i < correos.size(); i++){
 				Integer reserva=0;
@@ -414,11 +408,7 @@ public class ReservaDAO {
 				java.sql.Date fecha = rs.getDate("Fecha");
 				java.sql.Time hora=rs.getTime("Hora");
 				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fecha);
-				cal.set(Calendar.HOUR_OF_DAY, hora.toLocalTime().getHour());
-				cal.set(Calendar.MINUTE, hora.toLocalTime().getMinute());
-				Date fecha_hora = cal.getTime();
+				Date fecha_hora = combinarFechaYHora(fecha, hora);
 
 				reservas.add(new ReservaFamiliarDTO(correo, fecha_hora, duracion, nombre_pista));
 
@@ -433,6 +423,15 @@ public class ReservaDAO {
 			e.printStackTrace();
 		}
 		return reservas;
+	}
+
+	private Date combinarFechaYHora(java.sql.Date fecha, java.sql.Time hora) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fecha);
+		cal.set(Calendar.HOUR_OF_DAY, hora.toLocalTime().getHour());
+		cal.set(Calendar.MINUTE, hora.toLocalTime().getMinute());
+		Date fecha_hora = cal.getTime();
+		return fecha_hora;
 	}
 
     /**
@@ -469,11 +468,7 @@ public class ReservaDAO {
 				java.sql.Date fecha = rs.getDate("Fecha");
 				java.sql.Time hora=rs.getTime("Hora");
 				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fecha);
-				cal.set(Calendar.HOUR_OF_DAY, hora.toLocalTime().getHour());
-				cal.set(Calendar.MINUTE, hora.toLocalTime().getMinute());
-				Date fecha_hora = cal.getTime();
+				Date fecha_hora = combinarFechaYHora(fecha, hora);
 
 				reservas.add(new ReservaFamiliarDTO(correo, fecha_hora, duracion, nombre_pista, numero_de_niños, numero_de_adultos));
 
@@ -579,11 +574,7 @@ public class ReservaDAO {
 					java.sql.Time hora_reserva = rs.getTime("Hora");
 					int duracion_reserva = rs.getInt("Duracion");
 
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(fecha_reserva);
-					cal.set(Calendar.HOUR_OF_DAY, hora_reserva.toLocalTime().getHour());
-					cal.set(Calendar.MINUTE, hora_reserva.toLocalTime().getMinute());
-					Date fecha_hora = cal.getTime();
+					Date fecha_hora = combinarFechaYHora(fecha_reserva, hora_reserva);
 
 					Calendar calNuevaReserva = Calendar.getInstance();
 					calNuevaReserva.setTime(fecha);
@@ -595,7 +586,8 @@ public class ReservaDAO {
 					calendar.add(Calendar.MINUTE, duracion_reserva);
 					Date fechaFin = calendar.getTime();
 
-					if ((fecha.before(fechaFin) && fechaFinNuevaReserva.after(fecha_hora)) || fecha.equals(fecha_hora) || fechaFinNuevaReserva.equals(fecha_hora) || fecha.equals(fechaFin)) {
+					boolean existeSolapamiento = (fecha.before(fechaFin) && fechaFinNuevaReserva.after(fecha_hora)) || fecha.equals(fecha_hora) || fechaFinNuevaReserva.equals(fecha_hora) || fecha.equals(fechaFin);
+					if (existeSolapamiento) {
 						iterator.remove();
 						borrado = true;
 					}

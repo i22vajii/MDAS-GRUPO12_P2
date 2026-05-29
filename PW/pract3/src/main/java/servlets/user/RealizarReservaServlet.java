@@ -20,6 +20,7 @@ import display.CustomerBean;
 @WebServlet("/user/RealizarReservaServlet")
 public class RealizarReservaServlet extends HttpServlet {
 
+    private static final float DESCUENTO_POR_ANTIGUEDAD = 0.1f;
     private static final String RESERVA_INFANTIL = "infantil";
     private static final String RESERVA_FAMILIAR = "familiar";
     private static final String RESERVA_ADULTOS = "adultos";
@@ -36,11 +37,13 @@ public class RealizarReservaServlet extends HttpServlet {
             return; 
         }
         
-        if (request.getParameter("tipoReserva") == null || 
+        boolean faltanParametros = request.getParameter("tipoReserva") == null || 
             request.getParameter("numNinos") == null || 
             request.getParameter("numAdultos") == null || 
             request.getParameter("duracion") == null || 
-            request.getParameter("fechaHora") == null) {
+            request.getParameter("fechaHora") == null;
+        
+        if (faltanParametros) {
             
             response.sendRedirect("/pract3/mvc/control/user/pagina_principalUserController.jsp");
             return;
@@ -116,7 +119,7 @@ public class RealizarReservaServlet extends HttpServlet {
         int duracion = Integer.parseInt(request.getParameter("duracion"));
         String fechaHora = request.getParameter("fechaHora");
         
-        // <<< CAMBIO AQUÍ >>>
+        
         // Reemplazamos la declaración e inicialización separada por la llamada directa a la función
         int precio = calcularPrecioPorDuracion(duracion);
         float descuento = 0;
@@ -141,7 +144,7 @@ public class RealizarReservaServlet extends HttpServlet {
         } else {
             // Llamamos a la función descriptiva en lugar de hacer los cálculos aquí
             if (tieneAntiguedadSuficiente(cB.getFecha_inscripcion())) {
-                descuento = 0.1f;
+                descuento = DESCUENTO_POR_ANTIGUEDAD;
             }
         }
 
